@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+	id 'eclipse'
+}
+
+//Do not change it
+mainClassName = 'ca.antany.common.property.JarsClassLoader'
+
+
+//Use app main class 
+ext {
+	appMainClassName = 'TestMain'
+}
+
+dependencies {
+	compile 'io.github.antany:antlib:0.0.1'
+	compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.0.0.jre8'
+	
+    testCompile 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+}
+
+repositories {
+    jcenter()
+}
+
+task copyLib(type: Copy){
+	into "build/libs/lib" from configurations.compile.collect {it}
+}
+
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+        attributes 'inside-jars': configurations.compile.collect { 'lib/'+it.getName() }.join(' ');
+        attributes 'app-main-class': appMainClassName
+    }
+    into('lib'){
+	    from {
+	        configurations.compile.collect { it }
+	    }
+    }
+}
+
+//jar.dependsOn(copyLib)
+
+sourceSets{
+	main{
+		resources{
+			srcDirs  "src/main/resources"
+		}
+	}
+}
