@@ -13,10 +13,15 @@ ext {
 	appMainClassName = 'TestMain'
 }
 
+
+configurations {
+	executable
+}
+
 dependencies {
-	compile 'io.github.antany:antlib:0.0.1'
-	compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.0.0.jre8'
+	executable 'io.github.antany:antlib:0.0.1'
 	
+	compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.0.0.jre8'
     testCompile 'junit:junit:4.12'
 }
 
@@ -24,9 +29,8 @@ repositories {
     jcenter()
 }
 
-repositories {
-    jcenter()
-}
+
+
 
 task copyLib(type: Copy){
 	into "build/libs/lib" from configurations.compile.collect {it}
@@ -37,7 +41,7 @@ task copyLib(type: Copy){
 jar {
     manifest {
         attributes 'Main-Class': mainClassName
-        attributes 'inside-jars': configurations.compile.collect { 'lib/'+it.getName() }.join(' ');
+        attributes 'inside-jars': './ '+configurations.compile.collect { 'lib/'+it.getName() }.join(' ');
         attributes 'app-main-class': appMainClassName
     }
     into('lib'){
@@ -45,7 +49,16 @@ jar {
 	        configurations.compile.collect { it }
 	    }
     }
+    into('/'){
+    	from {
+    		configurations.executable.collect { it.isDirectory() ? it : zipTree(it) } 
+    	}
+    	
+    }
+    
 }
+
+
 
 //jar.dependsOn(copyLib)
 

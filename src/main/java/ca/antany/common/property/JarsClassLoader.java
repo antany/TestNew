@@ -76,17 +76,6 @@ public class JarsClassLoader {
 }
 
 
-
-class JarsClassLoaderURLStreamFactory implements URLStreamHandlerFactory{
-
-	@Override
-	public URLStreamHandler createURLStreamHandler(String protocol) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-}
-
 class RsrcURLStreamHandler extends java.net.URLStreamHandler {
 
 	private ClassLoader classLoader;
